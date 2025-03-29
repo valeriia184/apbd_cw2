@@ -1,65 +1,263 @@
 ﻿using System;
-using ContainersApp;
 
 namespace apbd_cw2
 {
     internal class Program
     {
+        static Ship ship1 = new Ship("Statek1", 10, 5, 10);
+        static Ship ship2 = new Ship("Statek2", 15, 5, 12);
+
         static void Main(string[] args)
         {
-            Ship ship1 = new Ship("Statek1", 10, 3, 10);
-            LiquidContainer liquid1 = new LiquidContainer(true, 1000, 300, 200, 150);
-            GasContainer gas1 = new GasContainer(5, 500, 200, 150, 100);
-            RefrigeratedContainer ref1 = new RefrigeratedContainer("Bananas", 13.3, 1000, 400, 250, 150);
+            bool exit = false;
+            while (!exit)
+            {
+                Console.WriteLine("1. Dodaj kontener (Liquid/Gas/Refrigerated)");
+                Console.WriteLine("2. Załaduj kontener");
+                Console.WriteLine("3. Rozładuj kontener");
+                Console.WriteLine("4. Usuń kontener ze statku");
+                Console.WriteLine("5. Zamień kontenery na statku");
+                Console.WriteLine("6. Przenieś kontener z jednego statku na drugi");
+                Console.WriteLine("7. Wyświetl informacje o statkach");
+                Console.WriteLine("0. Wyjście");
+                Console.Write("Wybierz opcję: ");
+                string choice = Console.ReadLine();
+                Console.WriteLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        AddContainerMenu();
+                        break;
+                    case "2":
+                        LoadContainerMenu();
+                        break;
+                    case "3":
+                        UnloadContainerMenu();
+                        break;
+                    case "4":
+                        RemoveContainerMenu();
+                        break;
+                    case "5":
+                        SwapContainersMenu();
+                        break;
+                    case "6":
+                        MoveContainerMenu();
+                        break;
+                    case "7":
+                        PrintShipInfo();
+                        break;
+                    case "0":
+                        exit = true;
+                        break;
+                    default:
+                        Console.WriteLine("Nieprawidłowa opcja.\n");
+                        break;
+                }
+            }
+        }
+
+        static void AddContainerMenu()
+        {
+            Console.WriteLine("Wybierz statek (1 lub 2): ");
+            string shipChoice = Console.ReadLine();
+            Ship ship = (shipChoice == "1") ? ship1 : ship2;
+
+            Console.WriteLine("Wybierz typ kontenera: ");
+            Console.WriteLine("1 - Liquid");
+            Console.WriteLine("2 - Gas");
+            Console.WriteLine("3 - Refrigerated");
+            string typeChoice = Console.ReadLine();
 
             try
             {
-                liquid1.Load(400);
-                gas1.Load(200);
-                ref1.Load(300);
-            }
-            catch (OverfillException ex)
-            {
-                Console.WriteLine("Błąd przepełnienia: " + ex.Message);
+                switch (typeChoice)
+                {
+                    case "1":
+                        Console.Write("Czy niebezpieczny? (true/false): ");
+                        bool hazardous = bool.Parse(Console.ReadLine());
+                        Console.Write("MaxCapacity (kg): ");
+                        double maxCapL = double.Parse(Console.ReadLine());
+                        Console.Write("OwnWeight (kg): ");
+                        double ownWeightL = double.Parse(Console.ReadLine());
+                        Console.Write("Height (cm): ");
+                        double heightL = double.Parse(Console.ReadLine());
+                        Console.Write("Depth (cm): ");
+                        double depthL = double.Parse(Console.ReadLine());
+                        LiquidContainer liquid = new LiquidContainer(hazardous, maxCapL, ownWeightL, heightL, depthL);
+                        ship.AddContainer(liquid);
+                        Console.WriteLine($"Dodano kontener {liquid.SerialNumber}\n");
+                        break;
+
+                    case "2":
+                        Console.Write("Ciśnienie (atm): ");
+                        double pressure = double.Parse(Console.ReadLine());
+                        Console.Write("MaxCapacity (kg): ");
+                        double maxCapG = double.Parse(Console.ReadLine());
+                        Console.Write("OwnWeight (kg): ");
+                        double ownWeightG = double.Parse(Console.ReadLine());
+                        Console.Write("Height (cm): ");
+                        double heightG = double.Parse(Console.ReadLine());
+                        Console.Write("Depth (cm): ");
+                        double depthG = double.Parse(Console.ReadLine());
+                        GasContainer gas = new GasContainer(pressure, maxCapG, ownWeightG, heightG, depthG);
+                        ship.AddContainer(gas);
+                        Console.WriteLine($"Dodano kontener {gas.SerialNumber}\n");
+                        break;
+
+                    case "3":
+                        Console.Write("Rodzaj produktu: ");
+                        string product = Console.ReadLine();
+                        Console.Write("Temperatura (°C): ");
+                        double temp = double.Parse(Console.ReadLine());
+                        Console.Write("MaxCapacity (kg): ");
+                        double maxCapR = double.Parse(Console.ReadLine());
+                        Console.Write("OwnWeight (kg): ");
+                        double ownWeightR = double.Parse(Console.ReadLine());
+                        Console.Write("Height (cm): ");
+                        double heightR = double.Parse(Console.ReadLine());
+                        Console.Write("Depth (cm): ");
+                        double depthR = double.Parse(Console.ReadLine());
+                        RefrigeratedContainer refc = new RefrigeratedContainer(product, temp, maxCapR, ownWeightR, heightR, depthR);
+                        ship.AddContainer(refc);
+                        Console.WriteLine($"Dodano kontener {refc.SerialNumber}\n");
+                        break;
+
+                    default:
+                        Console.WriteLine("Nieprawidłowy typ.\n");
+                        break;
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Inny błąd: " + ex.Message);
+                Console.WriteLine($"Błąd: {ex.Message}\n");
             }
+        }
+
+        static void LoadContainerMenu()
+        {
+            Console.WriteLine("Wybierz statek (1 lub 2): ");
+            string shipChoice = Console.ReadLine();
+            Ship ship = (shipChoice == "1") ? ship1 : ship2;
+
+            Console.Write("Podaj numer kontenera: ");
+            string serial = Console.ReadLine();
+            Console.Write("Podaj masę do załadowania (kg): ");
+            double massToLoad = double.Parse(Console.ReadLine());
 
             try
             {
-                ship1.AddContainer(liquid1);
-                ship1.AddContainer(gas1);
-                ship1.AddContainer(ref1);
+                BaseContainer container = ship.GetContainerBySerial(serial);
+                if (container == null)
+                {
+                    Console.WriteLine("Nie znaleziono kontenera.\n");
+                }
+                else
+                {
+                    container.Load(massToLoad);
+                    Console.WriteLine($"Załadowano {massToLoad} kg do kontenera {container.SerialNumber}\n");
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Błąd przy dodawaniu kontenera na statek: " + ex.Message);
+                Console.WriteLine($"Błąd: {ex.Message}\n");
             }
+        }
 
-            ship1.PrintInfo();
-            gas1.Unload();
-            Console.WriteLine($"Po rozładowaniu gazu (zostaje 5%): {gas1.CargoMass} kg");
-            ship1.SwapContainers(liquid1.SerialNumber, gas1.SerialNumber);
-            Console.WriteLine("Zamieniono miejscami kontenery liquid1 i gas1.\n");
-            ship1.PrintInfo();
-            Ship ship2 = new Ship("Statek2", 15, 5, 12);
+        static void UnloadContainerMenu()
+        {
+            Console.WriteLine("Wybierz statek (1 lub 2): ");
+            string shipChoice = Console.ReadLine();
+            Ship ship = (shipChoice == "1") ? ship1 : ship2;
+
+            Console.Write("Podaj numer kontenera: ");
+            string serial = Console.ReadLine();
+            BaseContainer container = ship.GetContainerBySerial(serial);
+            if (container == null)
+            {
+                Console.WriteLine("Nie znaleziono kontenera.\n");
+                return;
+            }
+            container.Unload();
+            Console.WriteLine($"Rozładowano kontener {container.SerialNumber}\n");
+        }
+
+        static void RemoveContainerMenu()
+        {
+            Console.WriteLine("Wybierz statek (1 lub 2): ");
+            string shipChoice = Console.ReadLine();
+            Ship ship = (shipChoice == "1") ? ship1 : ship2;
+
+            Console.Write("Podaj numer kontenera do usunięcia: ");
+            string serial = Console.ReadLine();
 
             try
             {
-                ship1.MoveContainerToAnotherShip(gas1.SerialNumber, ship2);
-                Console.WriteLine("Przeniesiono kontener gazowy na drugi statek.\n");
+                ship.RemoveContainer(serial);
+                Console.WriteLine($"Usunięto kontener {serial}\n");
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine("Błąd przenoszenia: " + e.Message);
+                Console.WriteLine($"Błąd: {ex.Message}\n");
+            }
+        }
+
+        static void SwapContainersMenu()
+        {
+            Console.WriteLine("Wybierz statek (1 lub 2): ");
+            string shipChoice = Console.ReadLine();
+            Ship ship = (shipChoice == "1") ? ship1 : ship2;
+
+            Console.Write("Podaj numer pierwszego kontenera: ");
+            string serialA = Console.ReadLine();
+            Console.Write("Podaj numer drugiego kontenera: ");
+            string serialB = Console.ReadLine();
+
+            try
+            {
+                ship.SwapContainers(serialA, serialB);
+                Console.WriteLine("Zamieniono kontenery.\n");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Błąd: {ex.Message}\n");
+            }
+        }
+
+        static void MoveContainerMenu()
+        {
+            Console.WriteLine("Wybierz statek źródłowy (1 lub 2): ");
+            string fromChoice = Console.ReadLine();
+            Ship fromShip = (fromChoice == "1") ? ship1 : ship2;
+
+            Console.WriteLine("Wybierz statek docelowy (1 lub 2): ");
+            string toChoice = Console.ReadLine();
+            Ship toShip = (toChoice == "1") ? ship1 : ship2;
+
+            if (fromShip == toShip)
+            {
+                Console.WriteLine("Statek źródłowy i docelowy są takie same.\n");
+                return;
             }
 
+            Console.Write("Podaj numer kontenera: ");
+            string serial = Console.ReadLine();
+
+            try
+            {
+                fromShip.MoveContainerToAnotherShip(serial, toShip);
+                Console.WriteLine($"Przeniesiono kontener {serial} ze statku {fromShip.Name} na {toShip.Name}\n");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Błąd: {ex.Message}\n");
+            }
+        }
+
+        static void PrintShipInfo()
+        {
             ship1.PrintInfo();
             ship2.PrintInfo();
-            Console.WriteLine("Naciśnij klawisz, aby zakończyć...");
-            Console.ReadKey();
         }
     }
 }

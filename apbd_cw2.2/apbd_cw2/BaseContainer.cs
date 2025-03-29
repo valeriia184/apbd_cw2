@@ -1,6 +1,4 @@
-using apbd_cw2;
-
-namespace ContainersApp
+namespace apbd_cw2
 {
     public abstract class BaseContainer
     {

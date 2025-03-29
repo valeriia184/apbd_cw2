@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ContainersApp;
 
 namespace apbd_cw2
 {
@@ -52,7 +51,7 @@ namespace apbd_cw2
 
         public void PrintInfo()
         {
-            Console.WriteLine($"--- Statek: {Name} ---");
+            Console.WriteLine($"--- {Name} ---");
             Console.WriteLine($"Prędkość: {Speed}, Max kontenery: {MaxContainerNum}, Max waga (t): {MaxWeightTons}");
             Console.WriteLine($"Aktualnie kontenerów: {_containers.Count}");
             foreach (var c in _containers)
@@ -84,6 +83,16 @@ namespace apbd_cw2
             }
             _containers.Remove(container);
             otherShip.AddContainer(container);
+        }
+
+        public int GetContainerCount()
+        {
+            return _containers.Count;
+        }
+
+        public BaseContainer GetContainerBySerial(string serialNumber)
+        {
+            return _containers.FirstOrDefault(c => c.SerialNumber == serialNumber);
         }
     }
 }
