@@ -1,0 +1,21 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "apbd_cw2", "apbd_cw2\apbd_cw2.csproj", "{1312E488-6322-438A-AC6A-36BEB56D6EBE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{946402C4-4979-405C-BCB3-4BECA3E35001}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1312E488-6322-438A-AC6A-36BEB56D6EBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1312E488-6322-438A-AC6A-36BEB56D6EBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1312E488-6322-438A-AC6A-36BEB56D6EBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1312E488-6322-438A-AC6A-36BEB56D6EBE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
